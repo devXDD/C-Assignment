@@ -10,11 +10,9 @@ public class Solution
     public string followMessage;
 
     public List<string> usernameList = new List<string>();
-    //public List<string> FollowerList = new List<string>();
-    public Dictionary<string, string> FollowerList = new Dictionary<string, string>();
-    public Dictionary<string, string> FollowerMessage = new Dictionary<string, string>();
-    public Dictionary<string, string> messageList = new Dictionary<string, string>();
-
+   // public Dictionary<string, string> FollowerMessage = new Dictionary<string, string>();
+    public List<KeyValuePair<string, string>> messageList = new List<KeyValuePair<string, string>>();
+    public List<KeyValuePair<string, string>> FollowerList = new List<KeyValuePair<string, string>>();
 
     public Solution(string username)
     {
@@ -26,28 +24,32 @@ public class Solution
     }
     public void AddMessage(string username, string message)
     {
-        messageList.Add(username, message);
+       messageList.Add(new KeyValuePair<string, string>(username, message));
     }
     public void GetMessage(string username)
     {
-        foreach (var s in messageList)
+        foreach (var element in messageList)
         {
-            Console.WriteLine(messageList[username]);
+            Console.WriteLine(element.Value);
         }
-    }
+}
     public void AddFollower(string username, string usernameToFollow)
     {
-        FollowerList.Add(username, usernameToFollow);
+        FollowerList.Add(new KeyValuePair<string, string>(username, usernameToFollow));
     }
     public void GetFollowedMessages(string username)
     {
-        var t = FollowerList[username];
-        //string s = FollowerList.[username];
-        foreach (var s in messageList)
+        var t = (from kvp in FollowerList where kvp.Key == username select kvp.Value).ToList();
+        foreach (var element in t)
         {
-            Console.WriteLine(messageList[t]);
+           foreach (var msg in messageList)
+            {
+                if(msg.Key == element)
+                {
+                    Console.WriteLine(msg.Value);
+                }
+            }
         }
-        //messageList.ElementAt(i).Key, messageList.ElementAt(i).Value);
     }
 
     static void Main(string[] args)
@@ -55,12 +57,19 @@ public class Solution
         Solution obj = new Solution("JohnSmith");
         obj.AddUser("JohnSmith");
         obj.AddMessage("JohnSmith", "Hello");
+        obj.AddMessage("JohnSmith", "Hello sir");
         obj.GetMessage("JohnSmith");
 
         obj.AddUser("JaneDoe");
+        obj.AddUser("JaneFoe");
+
         obj.AddMessage("JaneDoe", "Hello to you too");
+        obj.AddMessage("JaneDoe", "Hello to you too mam");
+
+        obj.AddMessage("JaneFoe", "Hello to you tooo");
 
         obj.AddFollower("JohnSmith", "JaneDoe");
+        obj.AddFollower("JohnSmith", "JaneFoe");
 
         obj.GetFollowedMessages("JohnSmith");
     }
